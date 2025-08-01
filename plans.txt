@@ -1,0 +1,10 @@
+back end chat 
+chức năng: 
+tài khoản: đăng nhập đăng ký, xác thực, kết bạn, thông tin
+chat (websocket): chat real time, gửi media
+
+data flow:
+user A -> open socket -> server -> room <- server <- open socket <- user B
+
+user flow:
+user A -> choose user B (server open room and add user A and user B) -> enter conversation
