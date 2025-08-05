@@ -11,3 +11,4 @@ cryptography
 pycryptodome
 daphne
 boto3
+starlette
