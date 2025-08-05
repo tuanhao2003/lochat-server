@@ -11,7 +11,6 @@ class Accounts(models.Model):
     avatar_url = models.TextField(null=True)
     bio = models.TextField(null=True)
     birth = models.DateField(null=True)
-    # public_key = models.TextField()
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(default=now)
     updated_at = models.DateTimeField(null=True, blank=True)

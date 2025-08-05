@@ -11,18 +11,17 @@ class Medias(models.Model):
     type = models.CharField(max_length=50, choices=MediaTypes.choices, default=MediaTypes.UNKNOW)
     size = models.BigIntegerField()
     url = models.TextField()
-    key = models.TextField()
     duration = models.FloatField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(default=now)
     updated_at = models.DateTimeField(null=True, blank=True)
 
     @property
-    def uploader(self):
+    def get_uploader(self):
         return self.uploader_relation.account
 
     @property
-    def conversation(self):
+    def get_conversation(self):
         return self.uploader_relation.conversation
 
     class Meta:

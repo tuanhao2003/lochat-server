@@ -1,6 +1,7 @@
 import uuid
 from django.utils.timezone import datetime, now
 from app.entities.accounts import Accounts
+from django.core.paginator import Paginator
 import logging
 
 log = logging.getLogger(__name__)
@@ -111,3 +112,21 @@ class AccountsRepo:
         except Exception as e:
             log.error("ERROR: from hard delete account: " + str(e))
             return False
+
+    @staticmethod
+    def get_all_paginated(page=1, page_size=10):
+        try:
+            queryset = Accounts.objects.all().order_by('-created_at')
+
+            paginator = Paginator(queryset, page_size)
+
+            items = paginator.page(page)
+
+            return {
+                "pages_count": paginator.num_pages,
+                "current_page": items.number,
+                "page_content": list(items)
+            }
+        except Exception as e:
+            log.error("ERROR: from get_all paginated accounts: " + str(e))
+            return None

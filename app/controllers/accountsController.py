@@ -4,12 +4,15 @@ from app.services.accountsService import AccountsService
 from app.mapping.accountsMapping import AccountsMapping
 from app.utils.baseResponse import BaseResponse
 from app.utils.dictHelper import DictHelper
+import logging
+
+log = logging.getLogger(__name__)
 
 class AccountsController(APIView):
 
     def post(self, request, action = None):
         try:
-            if action and action == "search":
+            if action and action == "user/search":
                 data = str(request.data.get("search_data"))
                 if data:
                     result = None
@@ -24,7 +27,7 @@ class AccountsController(APIView):
                             return BaseResponse.success(data=AccountsMapping(result, many=True).data)
                         return BaseResponse.success(data=AccountsMapping(result).data)
                     return BaseResponse.not_found(message="Không tìm thấy tài khoản")
-                return BaseResponse.custom(status_code=status.HTTP_400_BAD_REQUEST,message="Thông tin tìm kiếm không hợp lệ")
+                return BaseResponse.error(message="Thông tin tìm kiếm không hợp lệ")
             
             if action and action == "login":
                 username = str(request.data.get("username"))
@@ -35,7 +38,7 @@ class AccountsController(APIView):
                     if result:
                         return BaseResponse.success(data=result)
                     return BaseResponse.custom(status.HTTP_401_UNAUTHORIZED, "Sai tài khoản hoặc mật khẩu")
-                return BaseResponse.custom(status.HTTP_401_UNAUTHORIZED, "Thiếu thông tin đăng nhập")
+                return BaseResponse.error(message= "Thiếu thông tin đăng nhập")
             
             if action and action == "registry":
                 username = request.data.get("username")
@@ -48,19 +51,26 @@ class AccountsController(APIView):
                     result = AccountsService.registry(DictHelper.parse_python_dict(AccountsMapping(data=request.data)))
                     if result:
                         return BaseResponse.success(data=AccountsMapping(result).data)
-                    return BaseResponse.custom(status.HTTP_400_BAD_REQUEST, "Đăng ký thất bại")
-                return BaseResponse.custom(status.HTTP_401_UNAUTHORIZED, "Thiếu thông tin đăng ký")
+                    return BaseResponse.custom(status.HTTP_401_UNAUTHORIZED, "Đăng ký thất bại")
+                return BaseResponse.error(message= "Thiếu thông tin đăng ký")
             
-            if action and action == "restock_token":
-                headerAuth = str(request.headers.get("Authorization"))
-                if not headerAuth or not headerAuth.startswith("Bearer "):
-                    token = headerAuth.split(" ")[1]
-                    if token:
-                        result = AccountsService.restock_token(token)
-                        if result:
-                            return BaseResponse.success(data=result)
-                        return BaseResponse.custom(status.HTTP_401_UNAUTHORIZED, "Token không hợp lệ")
-                return BaseResponse.custom(status.HTTP_401_UNAUTHORIZED, "Thiếu token")
+            if action and action == "restock-token":
+                log.error(f"entered restock function")
+                token = request.data.get("token")
+                if token:
+                    result = AccountsService.restock_token(token)
+                    if result:
+                        return BaseResponse.success(data=result)
+                    return BaseResponse.custom(status_code=status.HTTP_401_UNAUTHORIZED, message="Token không hợp lệ")
+                return BaseResponse.error(message="Thiếu token")
+            
+            if action and action == "user/all-users":
+                data = request.data or {}
+                result = AccountsService.find_all_paginated(data)
+                if result:
+                    result["page_content"] = AccountsMapping(result.get("page_content", []), many=True).data
+                    return BaseResponse.success(data=result)
+                return BaseResponse.error(message="Dữ liệu không hợp lệ")
             
             return BaseResponse.internal(message=str(e))
         except Exception as e:
