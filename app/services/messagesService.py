@@ -165,3 +165,16 @@ class MessagesService:
         except Exception as e:
             log.error(f"ERROR: find_last_conversation_message {str(e)}")
             return None
+        
+    @staticmethod
+    def find_by_conversation(data: dict):
+        try:
+            conversation_id = data.get("conversation_id")
+            page = int(data.get("page", "1"))
+            page_size = int(data.get("page_size", "20"))
+            if conversation_id:
+                return MessagesRepo.filter_by_conversation(conversation_id=conversation_id, page=page, page_size=page_size)
+            return None
+        except Exception as e:
+            log.error(f"ERROR: find_conversation_message {str(e)}")
+            return None

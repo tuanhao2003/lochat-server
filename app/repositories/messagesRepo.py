@@ -4,6 +4,7 @@ from app.entities.messages import Messages
 from app.entities.medias import Medias 
 from app.entities.accountsConversations import AccountsConversations
 from app.enums.messageTypes import MessageTypes
+from django.core.paginator import Paginator
 import logging
 
 log = logging.getLogger(__name__)
@@ -121,4 +122,19 @@ class MessagesRepo:
             return Messages.objects.filter(conversation__id=conversation_id).order_by("-index").first()
         except Exception as e:
             log.error(f"ERROR: get_last_conversation_message {str(e)}")
+            return None
+        
+    @staticmethod
+    def filter_by_conversation(conversation_id: uuid.UUID, page: int = 1, page_size: int = 20):
+        try:
+            query_result = Messages.objects.filter(conversation__id=conversation_id).order_by("-index")
+            paginated = Paginator(query_result, page_size)
+            content = paginated.page(page)
+            return {
+                "pages_count": paginated.num_pages,
+                "current_page": content.number,
+                "page_content": list(content)
+            }
+        except Exception as e:
+            log.error(f"ERROR: get_conversation_message {str(e)}")
             return None
