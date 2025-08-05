@@ -2,8 +2,7 @@ from django.conf import settings
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework import status
-from app.utils.baseResponse import BaseResponse
-
+from django.http import JsonResponse
 class JwtMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
@@ -15,16 +14,28 @@ class JwtMiddleware:
 
         requestHeader = request.headers.get("Authorization")
         if not requestHeader or not requestHeader.startswith("Bearer "):
-            return BaseResponse.custom(status_code=status.HTTP_401_UNAUTHORIZED, message="Thiếu token")
+            return JsonResponse({
+                "success": False,
+                "message": "Thiếu token",
+                "data": None
+            }, status=401)
 
         accessTokenSplit = requestHeader.split(" ")[1]
         try:
             token = AccessToken(accessTokenSplit)
             user_id = token.get("user_id")
             if not user_id:
-                return BaseResponse.custom(status_code=status.HTTP_401_UNAUTHORIZED, message="Token không hợp lệ")
+                return JsonResponse({
+                    "success": False,
+                    "message": "Token không hợp lệ",
+                    "data": None
+                }, status=401)
             request.user_id = user_id
         except (TokenError, InvalidToken):
-            return BaseResponse.custom(status_code=status.HTTP_401_UNAUTHORIZED, message="Token không hợp lệ", data="invalid_token")
+            return JsonResponse({
+                "success": False,
+                "message": "Token không hợp lệ",
+                "data": "invalid_token"
+            }, status=401)
         return self.get_response(request)
         
