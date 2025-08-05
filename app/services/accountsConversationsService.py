@@ -39,6 +39,19 @@ class AccountsConversationsService:
         except Exception as e:
             log.error(f"ERROR: from find_by_account AC: {e}")
             return None
+    
+    @staticmethod
+    def find_by_account_paginated(data: dict):
+        try:
+            account_id = data.get("account_id")
+            page = int(data.get("page", "1"))
+            page_size = int(data.get("page_size", "10"))
+            if account_id and str(account_id).strip():
+                return AccountsConversationsRepo.filter_by_account_paginated(account_id=uuid.UUID(account_id), page=page, page_size=page_size)
+            return None
+        except Exception as e:
+            log.error(f"ERROR: from find_by_account AC: {e}")
+            return None
 
     @staticmethod
     def find_by_conversation(conversation_id: str):

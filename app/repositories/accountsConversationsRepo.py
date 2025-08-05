@@ -3,6 +3,7 @@ from django.utils.timezone import datetime, now
 from app.entities.accountsConversations import AccountsConversations
 from app.entities.accounts import Accounts
 from app.entities.conversations import Conversations
+from django.core.paginator import Paginator
 import logging
 
 log = logging.getLogger(__name__)
@@ -29,6 +30,21 @@ class AccountsConversationsRepo:
     def filter_by_account(account: Accounts):
         try:
             return AccountsConversations.objects.filter(account=account)
+        except Exception as e:
+            log.error("ERROR: from filter AC by account: " + str(e))
+            return None
+        
+    @staticmethod
+    def filter_by_account_paginated(account_id: uuid.UUID, page: int, page_size: int):
+        try:
+            query = AccountsConversations.objects.filter(account__id=account_id)
+            paginated = Paginator(query, page_size)
+            content = paginated.page(page)
+            return {
+                "pages_count": paginated.num_pages,
+                "current_page": content.number,
+                "page_content": list(content)
+            }
         except Exception as e:
             log.error("ERROR: from filter AC by account: " + str(e))
             return None
