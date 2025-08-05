@@ -26,6 +26,14 @@ class MediasRepo:
         except Exception as e:
             log.error("ERROR: from get media by id: " + str(e))
             return None
+        
+    @staticmethod
+    def get_by_url(media_url: str):
+        try:
+            return Medias.objects.get(url=media_url)
+        except Exception as e:
+            log.error("ERROR: from get media by url: " + str(e))
+            return None
             
     @staticmethod
     def filter_by_uploader(uploader: Accounts):
@@ -65,14 +73,6 @@ class MediasRepo:
             return Medias.objects.filter(Q(media_type=MediaTypes.VIDEO) | Q(media_type=MediaTypes.AUDIO), duration__lte=duration)
         except Exception as e:
             log.error("ERROR: from filter media by duration: " + str(e))
-            return None
-        
-    @staticmethod
-    def filter_by_key(key: str):
-        try:
-            return Medias.objects.filter(key=key)
-        except Exception as e:
-            log.error("ERROR: from filter media by key: " + str(e))
             return None
         
     @staticmethod
