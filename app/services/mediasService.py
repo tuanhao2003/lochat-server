@@ -194,15 +194,17 @@ class MediasService:
     @staticmethod
     def create(data: Dict):
         try:
+            uploader_id = data.get("uploader_id")
             name = data.get("name")
-            key = data.get("key")
+            type = data.get("type")
+            size = data.get("size")
+            url = data.get("url")
 
-            if not all([name, key]):
+            if not all([uploader_id, name, type, size, url]):
                 return None
 
-            existing = MediasRepo.filter_by_key(key)
+            existing = MediasRepo.get_by_url(url)
             if existing and existing.exists():
-                log.error(f"ERROR: media with key '{key}' already exists.")
                 return None
 
             return MediasRepo.do_create(data)
