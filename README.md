@@ -18,14 +18,15 @@ A simple social network project used for learning `Socket Shannel`, `Redis` and 
 - Pattern: Singleton, prototype, builder, observer, service-repository
 ---
 ### Installation
-***Step 1: Clone repository***
+> ***Step 1: Clone repository***
 - Open cmd and run this command `git clone https://github.com/tuanhao2003/lochat-server.git`
-- Then `cd lochat-server`
-***Step 2: Run docker desktop***
-- Open `Docker desktop`, if you don't have it, please install at `https://docs.docker.com/desktop/setup/install/windows-install/`
-***Step 3: Run project***
+- Then `cd lochat-server` 
+> ***Step 2: Run docker desktop***
+- Open `Docker desktop`, if you don't have it, please install at `https://docs.docker.com/desktop/setup/install/windows-install/` 
+> ***Step 3: Run project***
 - Open cmd and run `docker-compose up -d --build`
 ### Structure of the project
+```
 lochat-server
 ├── .github/
 ├── app/
@@ -62,3 +63,4 @@ lochat-server
 ├── manage.py
 ├── README.md
 ├── requirements.txt
+```
