@@ -220,3 +220,17 @@ class AccountsService:
         except Exception as e:
             log.error(f"ERROR: Lỗi khi cấp lại token: {str(e)}")
             return None
+
+    @staticmethod
+    def find_all_paginated(data: dict):
+        try:
+            page = int(data.get("page", "1"))
+            page_size = int(data.get("page_size", "10"))
+
+            if page <= 0 or page_size <= 0:
+                return None
+            return AccountsRepo.get_all_paginated(page=page, page_size=page_size)
+
+        except Exception as e:
+            log.error("ERROR: from find_all_paginated: " + str(e))
+            return None
