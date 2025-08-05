@@ -137,7 +137,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
 CHANNEL_LAYERS = {
@@ -166,10 +166,9 @@ REDIS_CONFIG = {
 }
 
 PUBLIC_ENDPOINTS = [
-    '/',
     '/login',
     '/registry',
-    '/restock_token',
+    '/restock-token',
 ]
 
 SIMPLE_JWT = {
