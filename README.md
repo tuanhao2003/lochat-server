@@ -1,4 +1,4 @@
-# Lochat
+# About Lochat
 A simple social network project used for learning `Socket Shannel`, `Redis` and `Redis Queue` in `Django` project. This project can be used for chatting in realtime and target to **Vietnamese** users.
 ---
 ### Main features
@@ -20,11 +20,12 @@ A simple social network project used for learning `Socket Shannel`, `Redis` and 
 ### Installation
 ***Step 1: Clone repository***
 - Open cmd and run this command `git clone https://github.com/tuanhao2003/lochat-server.git`
-- Then `cd lochat-server`
+- Then `cd lochat-server` 
 ***Step 2: Run docker desktop***
-- Open `Docker desktop`, if you don't have it, please install at `https://docs.docker.com/desktop/setup/install/windows-install/`
+- Open `Docker desktop`, if you don't have it, please install at [Docker install](https://docs.docker.com/desktop/setup/install/windows-install/)
 ***Step 3: Run project***
 - Open cmd and run `docker-compose up -d --build`
+---
 ### Structure of the project
 lochat-server
 ├── .github/
