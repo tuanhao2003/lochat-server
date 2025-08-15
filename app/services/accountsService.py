@@ -5,6 +5,8 @@ from app.repositories.accountsRepo import AccountsRepo
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.hashers import check_password, make_password
 from app.utils.redisClient import RedisClient
+from django.conf import settings
+
 import logging
 
 log = logging.getLogger(__name__)
@@ -174,6 +176,7 @@ class AccountsService:
                 return {
                     "access_token": str(refresh.access_token),
                     "refresh_token": str(refresh),
+                    "account": account
                 }
             return None
         except Exception as e:
@@ -219,6 +222,21 @@ class AccountsService:
             return None
         except Exception as e:
             log.error(f"ERROR: Lỗi khi cấp lại token: {str(e)}")
+            return None
+        
+    @staticmethod
+    def validate_token(account_id: str):
+        try:
+            account = AccountsService.find_by_id(account_id)
+            refresh = RefreshToken.for_user(account)
+            
+            return {
+                "access_token": str(refresh.access_token),
+                "refresh_token": str(refresh),
+                "account": account
+            }
+        except Exception as e:
+            log.error(f"ERROR: Lỗi validate token: {str(e)}")
             return None
 
     @staticmethod

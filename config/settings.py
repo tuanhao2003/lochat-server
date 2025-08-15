@@ -184,9 +184,9 @@ SIMPLE_JWT = {
 }
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
-corsCsrfAllowedHosts = os.getenv("CORS_CSRF_ALLOWED_HOSTS", "http://localhost")
-ports = [8080]
-allowedCorsCsrfOrigins = [f"{corsCsrfAllowedHosts}:{port}" for port in ports]
+corsCsrfAllowedHosts = os.getenv("CORS_CSRF_ALLOWED_HOSTS", "http://localhost").split(",")
+ports = os.getenv("ALLOWED_PORTS").split(",")
+allowedCorsCsrfOrigins = [f"{host}:{port}" for host in corsCsrfAllowedHosts for port in ports]
 CORS_ALLOWED_ORIGINS = [
     *allowedCorsCsrfOrigins
 ]

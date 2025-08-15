@@ -1,7 +1,6 @@
 from django.conf import settings
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
-from rest_framework import status
 from django.http import JsonResponse
 class JwtMiddleware:
     def __init__(self, get_response):
