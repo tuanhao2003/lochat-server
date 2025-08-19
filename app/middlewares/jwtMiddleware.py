@@ -15,7 +15,7 @@ class JwtMiddleware:
         if not requestHeader or not requestHeader.startswith("Bearer "):
             return JsonResponse({
                 "success": False,
-                "message": "Thiếu token",
+                "message": "missing_token",
                 "data": None
             }, status=401)
 
@@ -26,15 +26,15 @@ class JwtMiddleware:
             if not user_id:
                 return JsonResponse({
                     "success": False,
-                    "message": "Token không hợp lệ",
+                    "message": "invalid_token",
                     "data": None
                 }, status=401)
             request.user_id = user_id
         except (TokenError, InvalidToken):
             return JsonResponse({
                 "success": False,
-                "message": "Token không hợp lệ",
-                "data": "invalid_token"
+                "message": "expired_token",
+                "data": None
             }, status=401)
         return self.get_response(request)
         
