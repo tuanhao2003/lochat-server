@@ -142,3 +142,11 @@ class AccountsConversationsService:
             return AccountsConversationsRepo.get_by_account_and_conversation(data)
         except Exception:
             return None
+        
+    @staticmethod
+    def update_last_accessed(id: str):
+        try:
+            currentAC = AccountsConversationsService.find_by_id(id)
+            return AccountsConversationsRepo.handle_update_last_accessed(currentAC)
+        except Exception:
+            return None

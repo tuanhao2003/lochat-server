@@ -93,10 +93,6 @@ class MessagesService:
                 return None
             
             data["conversation"] = sender.get_conversation
-            new_index = 0
-            if len(MessagesService.find_all()) != 0:
-                new_index = int(MessagesService.find_last_conversation_message(sender.get_conversation.id).index) + 1
-            data["index"] = new_index
             return MessagesRepo.do_create(data)
         except Exception:
             return None
@@ -153,7 +149,7 @@ class MessagesService:
         try:
             conversation_id = data.get("conversation_id")
             page = int(data.get("page", "1"))
-            page_size = int(data.get("page_size", "20"))
+            page_size = int(data.get("page_size", "50"))
             if conversation_id:
                 return MessagesRepo.filter_by_conversation(conversation_id=conversation_id, page=page, page_size=page_size)
             return None

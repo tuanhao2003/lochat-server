@@ -106,3 +106,12 @@ class AccountsConversationsRepo:
             return True
         except Exception:
             return False
+        
+    @staticmethod
+    def handle_update_last_accessed(accountsConversations: AccountsConversations):
+        try:
+            accountsConversations.last_accessed = now
+            accountsConversations.save()
+            return accountsConversations
+        except Exception:
+            return None

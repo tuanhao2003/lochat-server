@@ -7,6 +7,7 @@ from app.utils.redisClient import RedisClient
 from app.services.messagesService import MessagesService
 from app.enums.messageTypes import MessageTypes
 from app.services.mediasService import MediasService
+from app.services.accountsConversationsService import AccountsConversationsService
 
 class RedisQueueConsumer(threading.Thread):
     def __init__(self, queue_key='message_queue'):
@@ -32,6 +33,7 @@ class RedisQueueConsumer(threading.Thread):
     def text_message_handler(self, data):
         try:
             result = MessagesService.create(data)
+            AccountsConversationsService.update_last_accessed(data["sender_relation_id"])
             if result:
                 channel_layer = get_channel_layer()
                 async_to_sync(channel_layer.group_send)(
@@ -59,6 +61,7 @@ class RedisQueueConsumer(threading.Thread):
             if media_created:
                 data["media_id"] = media_created.id
                 result = MessagesService.create(data)
+                AccountsConversationsService.update_last_accessed(data["sender_relation_id"])
                 if result:
                     channel_layer = get_channel_layer()
                     async_to_sync(channel_layer.group_send)(
