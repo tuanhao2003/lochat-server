@@ -29,16 +29,37 @@ class AccountsController(APIView):
                     return BaseResponse.not_found(message="Không tìm thấy tài khoản")
                 return BaseResponse.error(message="Thông tin tìm kiếm không hợp lệ")
             
-            if action and action == "login":
+            if action == "login":                
                 username = str(request.data.get("username"))
                 email = str(request.data.get("email"))
                 password = str(request.data.get("password"))
                 if (username or email) and password:
                     result = AccountsService.login(request.data)
                     if result:
-                        return BaseResponse.success(data=result)
+                        account = result.get("account")
+                        if account:
+                            if not account.is_active:
+                                result["account"] = "account_deactivated"
+                            else:
+                                result["account"] = AccountsMapping(account).data
+                            return BaseResponse.success(data=result)
                     return BaseResponse.custom(status.HTTP_401_UNAUTHORIZED, "Sai tài khoản hoặc mật khẩu")
                 return BaseResponse.error(message= "Thiếu thông tin đăng nhập")
+            
+            if action == "validate-token":
+                account_id = str(request.user_id)
+                if account_id:
+                    result = AccountsService.validate_token(account_id=account_id)
+                    if result:
+                        account = result.get("account")
+                        if account:
+                            if not account.is_active:
+                                result["account"] = "deactivated"
+                            else:
+                                result["account"] = AccountsMapping(account).data
+                            return BaseResponse.success(data=result)
+                    return BaseResponse.custom(status.HTTP_401_UNAUTHORIZED, "token không hợp lệ")
+                return BaseResponse.error(message="Thiếu token")
             
             if action and action == "registry":
                 username = request.data.get("username")
@@ -55,7 +76,6 @@ class AccountsController(APIView):
                 return BaseResponse.error(message= "Thiếu thông tin đăng ký")
             
             if action and action == "restock-token":
-                log.error(f"entered restock function")
                 token = request.data.get("token")
                 if token:
                     result = AccountsService.restock_token(token)
