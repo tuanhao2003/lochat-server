@@ -15,7 +15,7 @@ class MediasController(APIView):
                 
                 try:
                     metadata = json.loads(metadata_from_request) if metadata_from_request else {}
-                except Exception as e:
+                except Exception:
                     return BaseResponse.error("Metadata không phải JSON hợp lệ")
 
                 result = MediasService.storage_media_file(file, metadata)
@@ -23,5 +23,5 @@ class MediasController(APIView):
                     return BaseResponse.success(data=result)
                 return BaseResponse.error("upload thất bại")
             return BaseResponse.internal()
-        except Exception as e:
+        except Exception:
             return BaseResponse.internal(message=str(e))

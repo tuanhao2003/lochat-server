@@ -6,12 +6,7 @@ from asgiref.sync import async_to_sync
 from app.utils.redisClient import RedisClient
 from app.services.messagesService import MessagesService
 from app.enums.messageTypes import MessageTypes
-from app.enums.mediaTypes import MediaTypes 
 from app.services.mediasService import MediasService
-
-import logging
-
-log = logging.getLogger(__name__)
 
 class RedisQueueConsumer(threading.Thread):
     def __init__(self, queue_key='message_queue'):
@@ -31,8 +26,7 @@ class RedisQueueConsumer(threading.Thread):
                         self.text_message_handler(data)
                     else:
                         self.media_message_handler(data)
-            except Exception as e:
-                log.error(f"Redis consumer error: {e}")
+            except Exception:
                 time.sleep(1)
 
     def text_message_handler(self, data):
@@ -49,10 +43,8 @@ class RedisQueueConsumer(threading.Thread):
                         "reply_to": str(result.reply_to) if result.reply_to else None,
                     },
                 )
-            else:
-                log.error(f"DEBUG: xử lý fail")
-        except Exception as e:
-            log.error(f"DEBUG: lỗi handle thread redis {str(e)}")
+        except Exception:
+            pass
 
     def media_message_handler(self, data):
         try:
@@ -81,12 +73,8 @@ class RedisQueueConsumer(threading.Thread):
                             "media_url": str(result.media.url),
                         },
                     )
-                else:
-                    log.error(f"DEBUG: xử lý fail")
-            else:
-                log.error(f"DEBUG: xử lý media fail")
-        except Exception as e:
-            log.error(f"DEBUG: lỗi handle thread redis {str(e)}")
+        except Exception:
+            pass
 
     def stop(self):
         self.running = False

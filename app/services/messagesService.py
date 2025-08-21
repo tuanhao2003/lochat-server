@@ -6,17 +6,13 @@ from app.services.accountsConversationsService import AccountsConversationsServi
 from app.services.conversationsService import ConversationsService
 from app.services.mediasService import MediasService
 from app.enums.messageTypes import MessageTypes
-import logging
-
-log = logging.getLogger(__name__)
 
 class MessagesService:
     @staticmethod
     def find_all():
         try:
             return MessagesRepo.get_all()
-        except Exception as e:
-            log.error(f"ERROR: from find_all messages: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -26,8 +22,7 @@ class MessagesService:
                 uuid_obj = uuid.UUID(message_id)
                 return MessagesRepo.get_by_id(uuid_obj)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from find_by_id messages: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -38,8 +33,7 @@ class MessagesService:
                 if sender:
                     return MessagesRepo.filter_by_sender(sender)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from find_by_sender messages: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -48,8 +42,7 @@ class MessagesService:
             if message_type in MessageTypes.values:
                 return MessagesRepo.filter_by_type(message_type)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from find_by_type messages: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -60,8 +53,7 @@ class MessagesService:
                 if media:
                     return MessagesRepo.filter_by_media(media)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from find_by_media messages: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -72,24 +64,21 @@ class MessagesService:
                 if reply_msg:
                     return MessagesRepo.filter_by_reply(reply_msg)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from find_by_reply messages: {e}")
+        except Exception:
             return None
 
     @staticmethod
     def find_by_date_created(date: datetime = None):
         try:
             return MessagesRepo.filter_by_date_created(date or now())
-        except Exception as e:
-            log.error(f"ERROR: from find_by_date_created messages: {e}")
+        except Exception:
             return None
 
     @staticmethod
     def find_by_status(status: bool = True):
         try:
             return MessagesRepo.filter_by_status(status)
-        except Exception as e:
-            log.error(f"ERROR: from find_by_status messages: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -101,7 +90,6 @@ class MessagesService:
 
             sender = AccountsConversationsService.find_by_id(sender_id)
             if not sender:
-                log.error("ERROR: sender_relation not found.")
                 return None
             
             data["conversation"] = sender.get_conversation
@@ -110,8 +98,7 @@ class MessagesService:
                 new_index = int(MessagesService.find_last_conversation_message(sender.get_conversation.id).index) + 1
             data["index"] = new_index
             return MessagesRepo.do_create(data)
-        except Exception as e:
-            log.error(f"ERROR: from create messages: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -123,8 +110,7 @@ class MessagesService:
                     return None
                 return MessagesRepo.do_update(msg, data)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from update messages: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -136,8 +122,7 @@ class MessagesService:
                     return None
                 return MessagesRepo.do_delete(msg)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from delete messages: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -149,8 +134,7 @@ class MessagesService:
                     return False
                 return MessagesRepo.do_hard_delete(msg)
             return False
-        except Exception as e:
-            log.error(f"ERROR: from hard_delete messages: {e}")
+        except Exception:
             return False
 
     @staticmethod
@@ -159,11 +143,9 @@ class MessagesService:
             if conversation_id and str(conversation_id).strip():
                 result = MessagesRepo.get_last_conversation_message(conversation_id)
                 if result:
-                    log.error(f"test: find_last_conversation_message {result}")
                     return result
             return None
-        except Exception as e:
-            log.error(f"ERROR: find_last_conversation_message {str(e)}")
+        except Exception:
             return None
         
     @staticmethod
@@ -175,6 +157,5 @@ class MessagesService:
             if conversation_id:
                 return MessagesRepo.filter_by_conversation(conversation_id=conversation_id, page=page, page_size=page_size)
             return None
-        except Exception as e:
-            log.error(f"ERROR: find_conversation_message {str(e)}")
+        except Exception:
             return None

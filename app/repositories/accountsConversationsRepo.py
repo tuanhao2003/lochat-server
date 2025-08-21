@@ -4,9 +4,6 @@ from app.entities.accountsConversations import AccountsConversations
 from app.entities.accounts import Accounts
 from app.entities.conversations import Conversations
 from django.core.paginator import Paginator
-import logging
-
-log = logging.getLogger(__name__)
 
 
 class AccountsConversationsRepo:
@@ -14,24 +11,21 @@ class AccountsConversationsRepo:
     def get_all():
         try:
             return AccountsConversations.objects.all()
-        except Exception as e:
-            log.error("ERROR: from get all AC: " + str(e))
+        except Exception:
             return None
 
     @staticmethod
     def get_by_id(account_id: uuid.UUID):
         try:
             return AccountsConversations.objects.get(id=account_id)
-        except Exception as e:
-            log.error("ERROR: from get AC by id: " + str(e))
+        except Exception:
             return None
 
     @staticmethod
     def filter_by_account(account: Accounts):
         try:
             return AccountsConversations.objects.filter(account=account)
-        except Exception as e:
-            log.error("ERROR: from filter AC by account: " + str(e))
+        except Exception:
             return None
         
     @staticmethod
@@ -45,16 +39,14 @@ class AccountsConversationsRepo:
                 "current_page": content.number,
                 "page_content": list(content)
             }
-        except Exception as e:
-            log.error("ERROR: from filter AC by account: " + str(e))
+        except Exception:
             return None
 
     @staticmethod
     def filter_by_conversation(conversation: Conversations):
         try:
             return AccountsConversations.objects.filter(conversation=conversation)
-        except Exception as e:
-            log.error("ERROR: from filter  AC by conversation: " + str(e))
+        except Exception:
             return None
         
     @staticmethod
@@ -69,24 +61,21 @@ class AccountsConversationsRepo:
             conversation_id = data.get("conversation_id")
             if account_id and conversation_id:
                 return AccountsConversations.objects.get(conversation__id=conversation_id, account__id=account_id)
-        except Exception as e:
-            log.error("ERROR: from get AC by account and conversation: " + str(e))
+        except Exception:
             return None
         
     @staticmethod
     def filter_by_date_created(date: datetime):
         try:
             return AccountsConversations.objects.filter(created_at=date)
-        except Exception as e:
-            log.error("ERROR: from filter by email: " + str(e))
+        except Exception:
             return None
 
     @staticmethod
     def do_create(data: dict):
         try:
             return AccountsConversations.objects.create(**data)
-        except Exception as e:
-            log.error("ERROR: from create AC: "+ str(e))
+        except Exception:
             return None
 
     @staticmethod
@@ -97,8 +86,7 @@ class AccountsConversationsRepo:
             accountsConversations.updated_at = now
             accountsConversations.save(update_fields=data.keys()) 
             return accountsConversations
-        except Exception as e:
-            log.error("ERROR: from update AC: "+ str(e))
+        except Exception:
             return None
 
     @staticmethod
@@ -108,8 +96,7 @@ class AccountsConversationsRepo:
             accountsConversations.updated_at = now
             accountsConversations.save()
             return accountsConversations
-        except Exception as e:
-            log.error("ERROR: from delete AC: "+ str(e))
+        except Exception:
             return  None
 
     @staticmethod
@@ -117,6 +104,5 @@ class AccountsConversationsRepo:
         try:
             accountsConversations.delete()
             return True
-        except Exception as e:
-            log.error("ERROR: from delete AC: "+ str(e))
+        except Exception:
             return False
