@@ -23,5 +23,5 @@ class MediasController(APIView):
                     return BaseResponse.success(data=result)
                 return BaseResponse.error("upload thất bại")
             return BaseResponse.internal()
-        except Exception:
+        except Exception as e:
             return BaseResponse.internal(message=str(e))

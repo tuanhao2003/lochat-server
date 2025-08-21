@@ -16,5 +16,5 @@ class AccountsConversationsController(APIView):
                 response["page_content"] = ConversationsMapping(result, many=True).data
                 return BaseResponse.success(data=response)
             return BaseResponse.error()
-        except Exception:
+        except Exception as e:
             return BaseResponse.internal(message=f"lỗi ở đây {str(e)}")

@@ -39,7 +39,7 @@ class AccountsConversationsService:
         try:
             account_id = data.get("account_id")
             page = int(data.get("page", "1"))
-            page_size = int(data.get("page_size", "10"))
+            page_size = int(data.get("page_size", "30"))
             if account_id and str(account_id).strip():
                 return AccountsConversationsRepo.filter_by_account_paginated(account_id=uuid.UUID(account_id), page=page, page_size=page_size)
             return None

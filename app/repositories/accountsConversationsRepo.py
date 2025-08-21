@@ -31,7 +31,7 @@ class AccountsConversationsRepo:
     @staticmethod
     def filter_by_account_paginated(account_id: uuid.UUID, page: int, page_size: int):
         try:
-            query = AccountsConversations.objects.filter(account__id=account_id)
+            query = AccountsConversations.objects.filter(account__id=account_id).order_by("-last_accessed")
             paginated = Paginator(query, page_size)
             content = paginated.page(page)
             return {
@@ -45,7 +45,7 @@ class AccountsConversationsRepo:
     @staticmethod
     def filter_by_conversation(conversation: Conversations):
         try:
-            return AccountsConversations.objects.filter(conversation=conversation)
+            return AccountsConversations.objects.filter(conversation=conversation).order_by("-last_accessed")
         except Exception:
             return None
         
@@ -67,7 +67,7 @@ class AccountsConversationsRepo:
     @staticmethod
     def filter_by_date_created(date: datetime):
         try:
-            return AccountsConversations.objects.filter(created_at=date)
+            return AccountsConversations.objects.filter(created_at=date).order_by("-created_at")
         except Exception:
             return None
 
