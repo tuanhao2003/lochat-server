@@ -7,10 +7,6 @@ from app.services.accountsService import AccountsService
 from app.enums.messageTypes import MessageTypes
 from app.utils.redisClient import RedisClient
 from asgiref.sync import sync_to_async
-import logging
-
-log = logging.getLogger(__name__)
-
 
 class ChatConsumer(AsyncWebsocketConsumer):
     _room_id = None

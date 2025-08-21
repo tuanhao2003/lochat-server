@@ -4,9 +4,6 @@ from app.services.accountsService import AccountsService
 from app.mapping.accountsMapping import AccountsMapping
 from app.utils.baseResponse import BaseResponse
 from app.utils.dictHelper import DictHelper
-import logging
-
-log = logging.getLogger(__name__)
 
 class AccountsController(APIView):
 

@@ -8,6 +8,7 @@ class AccountsConversations(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     account = models.ForeignKey(Accounts, on_delete=models.CASCADE, related_name='RelatedAccountsConversations')
     conversation = models.ForeignKey(Conversations, on_delete=models.CASCADE, related_name='RelatedAccountsConversations')
+    last_accessed = models.DateTimeField(default=now)
     is_admin = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=now)
     updated_at = models.DateTimeField(null=True)
@@ -23,3 +24,8 @@ class AccountsConversations(models.Model):
     class Meta:
         app_label = "app"
         unique_together = ('account', 'conversation')
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['account', 'last_accessed']),
+        ]

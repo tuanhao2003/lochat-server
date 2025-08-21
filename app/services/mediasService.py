@@ -6,9 +6,6 @@ from app.services.accountsService import AccountsService
 from app.enums.mediaTypes import MediaTypes
 import boto3
 from django.conf import settings
-import logging
-
-log = logging.getLogger(__name__)
 
 
 class MediasService:
@@ -76,8 +73,7 @@ class MediasService:
                 'file_size': file_size,
                 'file_url': storage_url
             }
-        except Exception as e:
-            log.error(f"ERROR: upload media - {e}")
+        except Exception:
             return None
         
     @staticmethod
@@ -88,8 +84,7 @@ class MediasService:
     def find_all():
         try:
             return MediasRepo.get_all()
-        except Exception as e:
-            log.error(f"ERROR: from find_all media: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -99,8 +94,7 @@ class MediasService:
                 uuid_obj = uuid.UUID(media_id)
                 return MediasRepo.get_by_id(uuid_obj)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from find_by_id media: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -111,8 +105,7 @@ class MediasService:
                 if account:
                     return MediasRepo.filter_by_uploader(account)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from find_by_uploader media: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -121,8 +114,7 @@ class MediasService:
             if media_type and str(media_type).strip() and MediasService.is_valid_media_type(media_type):
                 return MediasRepo.filter_by_type(media_type)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from find_by_type media: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -131,8 +123,7 @@ class MediasService:
             if name and str(name).strip():
                 return MediasRepo.filter_by_name(name)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from find_by_name media: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -141,8 +132,7 @@ class MediasService:
             if size and size > 0:
                 return MediasRepo.filter_by_size(size)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from find_by_size media: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -151,8 +141,7 @@ class MediasService:
             if duration and duration > 0:
                 return MediasRepo.filter_by_duration(duration)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from find_by_duration media: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -161,24 +150,21 @@ class MediasService:
             if key and str(key).strip():
                 return MediasRepo.filter_by_key(key)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from find_by_key media: {e}")
+        except Exception:
             return None
 
     @staticmethod
     def find_by_date_created(date: datetime = None):
         try:
             return MediasRepo.filter_by_date_created(date or now())
-        except Exception as e:
-            log.error(f"ERROR: from find_by_date_created media: {e}")
+        except Exception:
             return None
 
     @staticmethod
     def find_by_status(status: bool = True):
         try:
             return MediasRepo.filter_by_status(status)
-        except Exception as e:
-            log.error(f"ERROR: from find_by_status media: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -187,8 +173,7 @@ class MediasService:
             if date:
                 return MediasRepo.filter_by_birth_day(date)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from find_by_birth_day media: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -208,8 +193,7 @@ class MediasService:
                 return None
 
             return MediasRepo.do_create(data)
-        except Exception as e:
-            log.error(f"ERROR: from create media: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -221,8 +205,7 @@ class MediasService:
                     return None
                 return MediasRepo.do_update(media, data)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from update media: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -234,8 +217,7 @@ class MediasService:
                     return None
                 return MediasRepo.do_delete(media)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from delete media: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -247,6 +229,5 @@ class MediasService:
                     return False
                 return MediasRepo.do_hard_delete(media)
             return False
-        except Exception as e:
-            log.error(f"ERROR: from hard_delete media: {e}")
+        except Exception:
             return False
