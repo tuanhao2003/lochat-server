@@ -4,17 +4,13 @@ from django.utils.timezone import datetime, now
 from app.repositories.accountsConversationsRepo import AccountsConversationsRepo
 from app.services.accountsService import AccountsService
 from app.services.conversationsService import ConversationsService
-import logging
-
-log = logging.getLogger(__name__)
 
 class AccountsConversationsService:
     @staticmethod
     def find_all():
         try:
             return AccountsConversationsRepo.get_all()
-        except Exception as e:
-            log.error(f"ERROR: from find_all AC: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -24,8 +20,7 @@ class AccountsConversationsService:
                 uuid_obj = uuid.UUID(ac_id)
                 return AccountsConversationsRepo.get_by_id(uuid_obj)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from find_by_id AC: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -36,8 +31,7 @@ class AccountsConversationsService:
                 if account:
                     return AccountsConversationsRepo.filter_by_account(account)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from find_by_account AC: {e}")
+        except Exception:
             return None
     
     @staticmethod
@@ -45,12 +39,11 @@ class AccountsConversationsService:
         try:
             account_id = data.get("account_id")
             page = int(data.get("page", "1"))
-            page_size = int(data.get("page_size", "10"))
+            page_size = int(data.get("page_size", "30"))
             if account_id and str(account_id).strip():
                 return AccountsConversationsRepo.filter_by_account_paginated(account_id=uuid.UUID(account_id), page=page, page_size=page_size)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from find_by_account AC: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -61,16 +54,14 @@ class AccountsConversationsService:
                 if conversation:
                     return AccountsConversationsRepo.filter_by_conversation(conversation)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from find_by_conversation AC: {e}")
+        except Exception:
             return None
 
     @staticmethod
     def find_by_date_created(date: datetime = None):
         try:
             return AccountsConversationsRepo.filter_by_date_created(date or now())
-        except Exception as e:
-            log.error(f"ERROR: from find_by_date_created AC: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -85,14 +76,12 @@ class AccountsConversationsService:
             account = AccountsService.find_by_id(account_id)
             conversation = ConversationsService.find_by_id(conversation_id)
             if not account or not conversation:
-                log.error("ERROR: Account or Conversation not found for AC creation.")
                 return None
             
             data["account"] = account
             data["conversation"] = conversation
             return AccountsConversationsRepo.do_create(data)
-        except Exception as e:
-            log.error(f"ERROR: from create AC: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -104,8 +93,7 @@ class AccountsConversationsService:
                     return None
                 return AccountsConversationsRepo.do_update(data, ac)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from update AC: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -117,8 +105,7 @@ class AccountsConversationsService:
                     return None
                 return AccountsConversationsRepo.do_delete(ac)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from delete AC: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -130,8 +117,7 @@ class AccountsConversationsService:
                     return False
                 return AccountsConversationsRepo.do_hard_delete(ac)
             return False
-        except Exception as e:
-            log.error(f"ERROR: from hard_delete AC: {e}")
+        except Exception:
             return False
 
     @staticmethod
@@ -147,14 +133,20 @@ class AccountsConversationsService:
                             if common_conversation.is_active and not common_conversation.is_community and not common_conversation.is_group:
                                 return common_conversation
             return None
-        except Exception as e:
-            log.error(f"ERROR: from find_common_conversation {str(e)}")
+        except Exception:
             return None
         
     @staticmethod
     def find_by_account_and_conversation(data: dict):
         try:
             return AccountsConversationsRepo.get_by_account_and_conversation(data)
-        except Exception as e:
-            log.error(f"ERROR: from find_common_conversation {str(e)}")
+        except Exception:
+            return None
+        
+    @staticmethod
+    def update_last_accessed(id: str):
+        try:
+            currentAC = AccountsConversationsService.find_by_id(id)
+            return AccountsConversationsRepo.handle_update_last_accessed(currentAC)
+        except Exception:
             return None

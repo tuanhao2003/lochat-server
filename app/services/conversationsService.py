@@ -3,9 +3,6 @@ from typing import Dict
 from django.utils.timezone import datetime, now
 from app.repositories.conversationsRepo import ConversationsRepo
 from app.services.accountsService import AccountsService
-import logging
-
-log = logging.getLogger(__name__)
 
 
 class ConversationsService:
@@ -13,8 +10,7 @@ class ConversationsService:
     def find_all():
         try:
             return ConversationsRepo.get_all()
-        except Exception as e:
-            log.error(f"ERROR: from find_all conversation: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -24,8 +20,7 @@ class ConversationsService:
                 uuid_obj = uuid.UUID(conversation_id)
                 return ConversationsRepo.get_by_id(uuid_obj)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from find_by_id conversation: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -34,32 +29,28 @@ class ConversationsService:
             if title and str(title).strip():
                 return ConversationsRepo.filter_by_title(title)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from find_by_title conversation: {e}")
+        except Exception:
             return None
 
     @staticmethod
     def find_all_personal_chats():
         try:
             return ConversationsRepo.get_all_personal_chats()
-        except Exception as e:
-            log.error(f"ERROR: from find_all_personal_chats: {e}")
+        except Exception:
             return None
 
     @staticmethod
     def find_all_groups(is_group: bool = True):
         try:
             return ConversationsRepo.get_all_groups(is_group)
-        except Exception as e:
-            log.error(f"ERROR: from find_all_groups: {e}")
+        except Exception:
             return None
 
     @staticmethod
     def find_all_communities(is_community: bool = True):
         try:
             return ConversationsRepo.get_all_communities(is_community)
-        except Exception as e:
-            log.error(f"ERROR: from find_all_communities: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -70,16 +61,14 @@ class ConversationsService:
                 if creator:
                     return ConversationsRepo.get_by_creator(creator)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from find_by_creator conversation: {e}")
+        except Exception:
             return None
 
     @staticmethod
     def find_by_date_created(date: datetime = None):
         try:
             return ConversationsRepo.filter_by_date_created(date or now())
-        except Exception as e:
-            log.error(f"ERROR: from find_by_date_created conversation: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -88,24 +77,21 @@ class ConversationsService:
             if date:
                 return ConversationsRepo.filter_by_birth_day(date)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from find_by_birth_day conversation: {e}")
+        except Exception:
             return None
 
     @staticmethod
     def find_by_status(status: bool = True):
         try:
             return ConversationsRepo.filter_by_status(status)
-        except Exception as e:
-            log.error(f"ERROR: from find_by_status conversation: {e}")
+        except Exception:
             return None
 
     @staticmethod
     def create(data: Dict):
         try:
             return ConversationsRepo.do_create(data)
-        except Exception as e:
-            log.error(f"ERROR: from create conversation: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -117,8 +103,7 @@ class ConversationsService:
                     return None
                 return ConversationsRepo.do_update(conversation, data)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from update conversation: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -130,8 +115,7 @@ class ConversationsService:
                     return None
                 return ConversationsRepo.do_delete(conversation)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from delete conversation: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -143,6 +127,5 @@ class ConversationsService:
                     return False
                 return ConversationsRepo.do_hard_delete(conversation)
             return False
-        except Exception as e:
-            log.error(f"ERROR: from hard_delete conversation: {e}")
+        except Exception:
             return False

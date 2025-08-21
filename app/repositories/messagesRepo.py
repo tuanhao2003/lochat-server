@@ -5,9 +5,6 @@ from app.entities.medias import Medias
 from app.entities.accountsConversations import AccountsConversations
 from app.enums.messageTypes import MessageTypes
 from django.core.paginator import Paginator
-import logging
-
-log = logging.getLogger(__name__)
 
 
 class MessagesRepo:
@@ -15,8 +12,7 @@ class MessagesRepo:
     def get_all():
         try:
             return Messages.objects.all()
-        except Exception as e:
-            log.error("ERROR: from get all messages: " + str(e))
+        except Exception:
             return None
 
 
@@ -24,64 +20,56 @@ class MessagesRepo:
     def get_by_id(message_id: uuid.UUID):
         try:
             return Messages.objects.get(id=message_id)
-        except Exception as e:
-            log.error("ERROR: from get message by id: " + str(e))
+        except Exception:
             return None
             
     @staticmethod
     def filter_by_sender(sender: AccountsConversations):
         try:
             return Messages.objects.filter(sender_relation=sender)
-        except Exception as e:
-            log.error("ERROR: from filter message by sender: " + str(e))
+        except Exception:
             return None
 
     @staticmethod
     def filter_by_type(type: MessageTypes.choices):
         try:
             return Messages.objects.filter(type=type)
-        except Exception as e:
-            log.error("ERROR: from filter message by type: " + str(e))
+        except Exception:
             return None
         
     @staticmethod
     def filter_by_media(media: Medias):
         try:
             return Messages.objects.filter(media=media)
-        except Exception as e:
-            log.error("ERROR: from filter message by media: " + str(e))
+        except Exception:
             return None
         
     @staticmethod
     def filter_by_reply(rep: Messages):
         try:
             return Messages.objects.filter(reply_to=rep)
-        except Exception as e:
-            log.error("ERROR: from filter message by reply: " + str(e))
+        except Exception:
             return None
         
     @staticmethod
     def filter_by_date_created(date: datetime):
         try:
             return Messages.objects.filter(created_at=date)
-        except Exception as e:
-            log.error("ERROR: from filter message by date created: " + str(e))
+        except Exception:
             return None
 
     @staticmethod
     def filter_by_status(status: bool = True):
         try:
             return Messages.objects.filter(is_active=status)
-        except Exception as e:
-            log.error("ERROR: from filter message by status: " + str(e))
+        except Exception:
             return None
 
     @staticmethod
     def do_create(data: dict):
         try:
             return Messages.objects.create(**data)
-        except Exception as e:
-            log.error("ERROR: from create message: " + str(e))
+        except Exception:
             return None
 
     @staticmethod
@@ -92,8 +80,7 @@ class MessagesRepo:
             message.updated_at = now
             message.save(update_fields=data.keys()) 
             return message
-        except Exception as e:
-            log.error("ERROR: from update message: " + str(e))
+        except Exception:
             return None
 
     @staticmethod
@@ -103,8 +90,7 @@ class MessagesRepo:
             message.updated_at = now
             message.save()
             return message
-        except Exception as e:
-            log.error("ERROR: from soft delele message: " + str(e))
+        except Exception:
             return None
 
     @staticmethod
@@ -112,22 +98,20 @@ class MessagesRepo:
         try:
             message.delete()
             return True
-        except Exception as e:
-            log.error("ERROR: from hard delete message: " + str(e))
+        except Exception:
             return False
 
     @staticmethod
     def get_last_conversation_message(conversation_id):
         try:
-            return Messages.objects.filter(conversation__id=conversation_id).order_by("-index").first()
-        except Exception as e:
-            log.error(f"ERROR: get_last_conversation_message {str(e)}")
+            return Messages.objects.filter(conversation__id=conversation_id).order_by("-sent_time").first()
+        except Exception:
             return None
         
     @staticmethod
-    def filter_by_conversation(conversation_id: uuid.UUID, page: int = 1, page_size: int = 20):
+    def filter_by_conversation(conversation_id: uuid.UUID, page: int = 1, page_size: int = 50):
         try:
-            query_result = Messages.objects.filter(conversation__id=conversation_id).order_by("-index")
+            query_result = Messages.objects.filter(conversation__id=conversation_id).order_by("-sent_time")
             paginated = Paginator(query_result, page_size)
             content = paginated.page(page)
             return {
@@ -135,6 +119,5 @@ class MessagesRepo:
                 "current_page": content.number,
                 "page_content": list(content)
             }
-        except Exception as e:
-            log.error(f"ERROR: get_conversation_message {str(e)}")
+        except Exception:
             return None

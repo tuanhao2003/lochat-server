@@ -5,11 +5,6 @@ from app.repositories.accountsRepo import AccountsRepo
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.hashers import check_password, make_password
 from app.utils.redisClient import RedisClient
-from django.conf import settings
-
-import logging
-
-log = logging.getLogger(__name__)
 
 
 class AccountsService:
@@ -23,8 +18,7 @@ class AccountsService:
     def find_all():
         try:
             return AccountsRepo.get_all()
-        except Exception as e:
-            log.error(f"ERROR: from find all account: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -34,8 +28,7 @@ class AccountsService:
                 uuid_obj = uuid.UUID(account_id)
                 return AccountsRepo.get_by_id(uuid_obj)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from find_by_id account: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -44,8 +37,7 @@ class AccountsService:
             if username and str(username).strip():
                 return AccountsRepo.get_by_username(username)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from find_by_username account: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -54,8 +46,7 @@ class AccountsService:
             if nickname and str(nickname).strip():
                 return AccountsRepo.filter_by_nickname(nickname)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from find_by_nickname account: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -64,24 +55,21 @@ class AccountsService:
             if AccountsService.is_valid_email(email):
                 return AccountsRepo.get_by_email(email)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from find_by_email account: {e}")
+        except Exception:
             return None
 
     @staticmethod
     def find_by_status(is_active: bool = True):
         try:
             return AccountsRepo.filter_by_status(is_active)
-        except Exception as e:
-            log.error(f"ERROR: from find_by_status account: {e}")
+        except Exception:
             return None
 
     @staticmethod
     def find_by_date_created(date: datetime = None):
         try:
             return AccountsRepo.filter_by_date_created(date or now())
-        except Exception as e:
-            log.error(f"ERROR: from find_by_created_date account: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -90,8 +78,7 @@ class AccountsService:
             if date:
                 return AccountsRepo.filter_by_birth_day(date)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from find_by_birth_day account: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -101,16 +88,13 @@ class AccountsService:
             email = data.get("email")
 
             if AccountsRepo.get_by_username(username):
-                log.error(f"ERROR: username '{username}' already exists.")
                 return None
 
             if AccountsRepo.get_by_email(email):
-                log.error(f"ERROR: email '{email}' already exists.")
                 return None
 
             return AccountsRepo.do_create(data)
-        except Exception as e:
-            log.error(f"ERROR: from create account: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -122,8 +106,7 @@ class AccountsService:
                     return None
                 return AccountsRepo.do_update(account, data)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from update account: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -135,8 +118,7 @@ class AccountsService:
                     return None
                 return AccountsRepo.do_delete(account)
             return None
-        except Exception as e:
-            log.error(f"ERROR: from delete account: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -148,8 +130,7 @@ class AccountsService:
                     return False
                 return AccountsRepo.do_hard_delete(account)
             return False
-        except Exception as e:
-            log.error(f"ERROR: from hard_delete account: {e}")
+        except Exception:
             return False
 
     @staticmethod
@@ -179,8 +160,7 @@ class AccountsService:
                     "account": account
                 }
             return None
-        except Exception as e:
-            log.error(f"ERROR: from login: {e}")
+        except Exception:
             return None
 
     @staticmethod
@@ -197,8 +177,7 @@ class AccountsService:
 
             return None
 
-        except Exception as e:
-            log.error(f"ERROR: when registry: {str(e)}")
+        except Exception:
             return None
 
     @staticmethod
@@ -220,8 +199,7 @@ class AccountsService:
                 )
                 return {"access_token": str(access), "refresh_token": str(refresh)}
             return None
-        except Exception as e:
-            log.error(f"ERROR: Lỗi khi cấp lại token: {str(e)}")
+        except Exception:
             return None
         
     @staticmethod
@@ -235,8 +213,7 @@ class AccountsService:
                 "refresh_token": str(refresh),
                 "account": account
             }
-        except Exception as e:
-            log.error(f"ERROR: Lỗi validate token: {str(e)}")
+        except Exception:
             return None
 
     @staticmethod
@@ -249,6 +226,5 @@ class AccountsService:
                 return None
             return AccountsRepo.get_all_paginated(page=page, page_size=page_size)
 
-        except Exception as e:
-            log.error("ERROR: from find_all_paginated: " + str(e))
+        except Exception:
             return None
