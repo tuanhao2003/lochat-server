@@ -20,10 +20,12 @@ from app.controllers.accountsController import AccountsController
 from app.controllers.mediasController import MediasController
 from app.controllers.messagesController import MessagesController
 from app.controllers.accountsConversationsController import AccountsConversationsController
+from app.controllers.authController import AuthController; 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('<str:action>', AccountsController.as_view(), name='accounts_action'),
+    path('<str:action>', AuthController.as_view(), name='accounts_action'),
+    path('user/<str:action>', AccountsController.as_view(), name='accounts_action'),
     path('media/<str:action>', MediasController.as_view(), name='medias_action'),
     path('message/<str:action>', MessagesController.as_view(), name='messages_action'),
     path('conversation/<str:action>', AccountsConversationsController.as_view(), name='AC_action'),

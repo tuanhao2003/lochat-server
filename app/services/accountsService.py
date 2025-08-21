@@ -197,7 +197,7 @@ class AccountsService:
                     value=str(refresh),
                     expire_sec=7 * 24 * 60 * 60,
                 )
-                return {"access_token": str(access), "refresh_token": str(refresh)}
+                return {"access_token": str(access), "refresh_token": str(refresh), "account": account}
             return None
         except Exception:
             return None
