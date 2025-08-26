@@ -3,14 +3,18 @@ import json
 import time
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from app.mapping.accountsMapping import AccountsMapping
+from app.mapping.mediasMapping import MediasMapping
+from app.mapping.messagesMapping import MessagesMapping
 from app.utils.redisClient import RedisClient
 from app.services.messagesService import MessagesService
 from app.enums.messageTypes import MessageTypes
 from app.services.mediasService import MediasService
 from app.services.accountsConversationsService import AccountsConversationsService
 
+
 class RedisQueueConsumer(threading.Thread):
-    def __init__(self, queue_key='message_queue'):
+    def __init__(self, queue_key="message_queue"):
         super().__init__(daemon=True)
         self.queue_key = queue_key
         self.running = True
@@ -33,16 +37,16 @@ class RedisQueueConsumer(threading.Thread):
     def text_message_handler(self, data):
         try:
             result = MessagesService.create(data)
-            AccountsConversationsService.update_last_accessed(data["sender_relation_id"])
+
             if result:
                 channel_layer = get_channel_layer()
                 async_to_sync(channel_layer.group_send)(
                     str(result.conversation.id),
                     {
-                        "type": data.get("type"),
-                        "content": str(result.content),
-                        "sender": str(result.sender_relation.get_account.nickname),
-                        "reply_to": str(result.reply_to) if result.reply_to else None,
+                        "type": MessageTypes.TEXT,
+                        "content": json.loads(json.dumps(MessagesMapping(result).data, default=str)),
+                        "sender": json.loads(json.dumps(AccountsMapping(result.sender_relation.get_account).data, default=str)),
+                        "reply_to": str(result.reply_to) if result.reply_to else None
                     },
                 )
         except Exception:
@@ -61,19 +65,19 @@ class RedisQueueConsumer(threading.Thread):
             if media_created:
                 data["media_id"] = media_created.id
                 result = MessagesService.create(data)
-                AccountsConversationsService.update_last_accessed(data["sender_relation_id"])
+
                 if result:
                     channel_layer = get_channel_layer()
                     async_to_sync(channel_layer.group_send)(
                         str(result.conversation.id),
                         {
-                            "type": data.get("type"),
-                            "content": str(result.content),
-                            "sender": str(result.sender_relation.get_account.nickname),
-                            "reply_to": str(result.reply_to) if result.reply_to else None,
-                            "media_type": str(result.media.type),
-                            "media_name": str(result.media.name),
-                            "media_url": str(result.media.url),
+                            "type": MessageTypes.MEDIA,
+                            "content": json.loads(json.dumps(MessagesMapping(result).data, default=str)),
+                            "sender": json.loads(json.dumps(AccountsMapping(result.sender_relation.get_account).data, default=str)),
+                            "media": json.loads(json.dumps(MediasMapping(result.media).data, default=str)),
+                            "reply_to": (
+                                str(result.reply_to) if result.reply_to else None
+                            ),
                         },
                     )
         except Exception:

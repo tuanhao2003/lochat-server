@@ -8,7 +8,6 @@ from app.entities.medias import Medias
 
 class Messages(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    sent_time = models.DateTimeField(default=now)
     conversation = models.ForeignKey(Conversations, on_delete=models.CASCADE, related_name="ConversationRelated")
     sender_relation = models.ForeignKey(AccountsConversations, on_delete=models.CASCADE, related_name='MessagesSent')
     type = models.CharField(max_length=50, choices=MessageTypes.choices, default=MessageTypes.TEXT)
@@ -27,9 +26,6 @@ class Messages(models.Model):
         app_label = "app"
 
     class Meta:
-        unique_together = ('conversation', 'sent_time')
-    class Meta:
         indexes = [
-            models.Index(fields=['conversation', 'sent_time']),
+            models.Index(fields=['conversation', 'created_at']),
         ]
-

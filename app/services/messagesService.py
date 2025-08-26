@@ -93,6 +93,7 @@ class MessagesService:
                 return None
             
             data["conversation"] = sender.get_conversation
+            AccountsConversationsService.update_last_accessed(sender)
             return MessagesRepo.do_create(data)
         except Exception:
             return None

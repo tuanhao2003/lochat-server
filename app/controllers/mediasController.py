@@ -1,4 +1,5 @@
 from rest_framework.views import APIView
+from app.mapping.mediasMapping import MediasMapping
 from app.utils.baseResponse import BaseResponse
 from app.services.mediasService import MediasService
 import json
@@ -22,6 +23,13 @@ class MediasController(APIView):
                 if result:
                     return BaseResponse.success(data=result)
                 return BaseResponse.error("upload thất bại")
+            
+            if action and action == "get-by-id":
+                media_id = request.data.get("media_id")
+                result = MediasService.find_by_id(media_id=media_id)
+                if result:
+                    return BaseResponse.success(data=MediasMapping(result).data)
+
             return BaseResponse.internal()
         except Exception as e:
             return BaseResponse.internal(message=str(e))

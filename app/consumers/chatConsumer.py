@@ -8,6 +8,7 @@ from app.enums.messageTypes import MessageTypes
 from app.utils.redisClient import RedisClient
 from asgiref.sync import sync_to_async
 
+
 class ChatConsumer(AsyncWebsocketConsumer):
     _room_id = None
     _current_user = None
@@ -46,7 +47,22 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def text(self, event):
         await self.send(
             text_data=json.dumps(
-                {"sender": event["sender"], "content": event["content"]},
+                {
+                    "content": event["content"],
+                    "sender": event["sender"],
+                },
+                ensure_ascii=False,
+            )
+        )
+
+    async def media(self, event):
+        await self.send(
+            text_data=json.dumps(
+                {
+                    "content": event["content"],
+                    "sender": event["sender"],
+                    "media": event["media"],
+                },
                 ensure_ascii=False,
             )
         )
@@ -135,7 +151,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                         "media_name": name,
                         "media_type": media_type,
                         "media_size": size,
-                        "media_url": url
+                        "media_url": url,
                     }
                 else:
                     message_data = {

@@ -104,14 +104,14 @@ class MessagesRepo:
     @staticmethod
     def get_last_conversation_message(conversation_id):
         try:
-            return Messages.objects.filter(conversation__id=conversation_id).order_by("-sent_time").first()
+            return Messages.objects.filter(conversation__id=conversation_id).order_by("-created_at").first()
         except Exception:
             return None
         
     @staticmethod
     def filter_by_conversation(conversation_id: uuid.UUID, page: int = 1, page_size: int = 50):
         try:
-            query_result = Messages.objects.filter(conversation__id=conversation_id).order_by("-sent_time")
+            query_result = Messages.objects.filter(conversation__id=conversation_id).order_by("-created_at")
             paginated = Paginator(query_result, page_size)
             content = paginated.page(page)
             return {

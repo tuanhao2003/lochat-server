@@ -1,6 +1,7 @@
 import uuid
 from typing import Dict
 from django.utils.timezone import datetime, now
+from app.entities.accountsConversations import AccountsConversations
 from app.repositories.accountsConversationsRepo import AccountsConversationsRepo
 from app.services.accountsService import AccountsService
 from app.services.conversationsService import ConversationsService
@@ -144,9 +145,8 @@ class AccountsConversationsService:
             return None
         
     @staticmethod
-    def update_last_accessed(id: str):
+    def update_last_accessed(currentAC: AccountsConversations):
         try:
-            currentAC = AccountsConversationsService.find_by_id(id)
             return AccountsConversationsRepo.handle_update_last_accessed(currentAC)
         except Exception:
             return None
