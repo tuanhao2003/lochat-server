@@ -77,7 +77,7 @@ class MessagesRepo:
         try:
             for field, value in data.items():
                 setattr(message, field, value)
-            message.updated_at = now
+            message.updated_at = now()
             message.save(update_fields=data.keys()) 
             return message
         except Exception:
@@ -87,7 +87,7 @@ class MessagesRepo:
     def do_delete(message: Messages):
         try:
             message.is_active = False
-            message.updated_at = now
+            message.updated_at = now()
             message.save()
             return message
         except Exception:

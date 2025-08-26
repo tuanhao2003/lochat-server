@@ -88,7 +88,7 @@ class ConversationsRepo:
         try:
             for field, value in data.items():
                 setattr(conversation, field, value)
-            conversation.updated_at = now
+            conversation.updated_at = now()
             conversation.save(update_fields=data.keys()) 
             return conversation
         except Exception:
@@ -98,7 +98,7 @@ class ConversationsRepo:
     def do_delete(conversation: Conversations):
         try:
             conversation.is_active = False
-            conversation.updated_at = now
+            conversation.updated_at = now()
             conversation.save()
             return conversation
         except Exception:

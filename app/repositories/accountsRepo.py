@@ -74,7 +74,7 @@ class AccountsRepo:
         try:
             for field, value in data.items():
                 setattr(account, field, value)
-            account.updated_at = now
+            account.updated_at = now()
             account.save(update_fields=data.keys()) 
             return account
         except Exception:
@@ -84,7 +84,7 @@ class AccountsRepo:
     def do_delete(account: Accounts):
         try:
             account.is_active = False
-            account.updated_at = now
+            account.updated_at = now()
             account.save()
             return account
         except Exception:

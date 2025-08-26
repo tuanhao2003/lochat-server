@@ -97,7 +97,7 @@ class MediasRepo:
         try:
             for field, value in data.items():
                 setattr(media, field, value)
-            media.updated_at = now
+            media.updated_at = now()
             media.save(update_fields=data.keys()) 
             return media
         except Exception:
@@ -107,7 +107,7 @@ class MediasRepo:
     def do_delete(media: Medias):
         try:
             media.is_active = False
-            media.updated_at = now
+            media.updated_at = now()
             media.save()
             return media
         except Exception:
