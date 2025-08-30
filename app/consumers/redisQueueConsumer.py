@@ -10,7 +10,6 @@ from app.utils.redisClient import RedisClient
 from app.services.messagesService import MessagesService
 from app.enums.messageTypes import MessageTypes
 from app.services.mediasService import MediasService
-from app.services.accountsConversationsService import AccountsConversationsService
 
 
 class RedisQueueConsumer(threading.Thread):

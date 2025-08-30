@@ -22,6 +22,12 @@ class AccountsConversationsController(APIView):
                 result = AccountsConversationsService.find_by_id(ac_id=id)
                 if result:
                     return BaseResponse.success(data=AccountsConversationsMapping(result).data)
+                
+            if action and action == "get-by-conversation-id":
+                id = request.data.get("conversation_id")
+                result = AccountsConversationsService.find_by_conversation(conversation_id=id)
+                if result:
+                    return BaseResponse.success(data=AccountsConversationsMapping(result).data)
             return BaseResponse.error()
         except Exception as e:
             return BaseResponse.internal(message=f"lỗi ở đây {str(e)}")
